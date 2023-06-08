@@ -8,14 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+
+    @StateObject var viewModel = BrowserViewModel()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationStack {
+            VStack {
+                TextField("URL",
+                          text: $viewModel.urlString,
+                          onCommit: {
+                    viewModel.loadURLString()
+                })
+                if let url = URL(string: viewModel.urlString) {
+                    BrowserView(url: url, viewModel: viewModel)
+                        .frame(height: 300)
+                }
+                TextEditor(text: $viewModel.transcript)
+            }
+            .padding()
         }
-        .padding()
+        .navigationBarTitle("WWDC Summaries")
+        .navigationBarTitleDisplayMode(.inline) // smaller centered title
     }
 }
 
